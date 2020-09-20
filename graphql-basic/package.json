@@ -23,5 +23,8 @@
     "graphql-yoga": "^1.14.10",
     "nodemon": "^2.0.4",
     "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.26.0"
   }
 }
