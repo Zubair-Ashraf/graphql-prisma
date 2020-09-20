@@ -13,14 +13,22 @@ const posts = [
     title: "GraphQL",
     body: "This post is for graphql",
     published: true,
+    author: 1,
   },
   {
     id: 2,
     title: "React.js",
     body: "This post is for reactjs",
     published: false,
+    author: 1,
   },
-  { id: 3, title: "Node.js", body: "This post is for nodejs", published: true },
+  {
+    id: 3,
+    title: "Node.js",
+    body: "This post is for nodejs",
+    published: true,
+    author: 2,
+  },
 ];
 
 //Type defination (schema)
@@ -36,12 +44,14 @@ const typeDefs = `
       name: String!
       email: String!
       age: Int
+      posts: [Post!]!
     }
     type Post {
       id: ID!
       title: String!
       body: String!
       published: Boolean!
+      author: User!
     }
 `;
 
@@ -76,6 +86,20 @@ const resolvers = {
             post.body.toLocaleLowerCase().includes(query.toLocaleLowerCase())
         );
       }
+    },
+  },
+  Post: {
+    author(parent, args, ctx, info) {
+      return users.find((user) => {
+        return user.id === parent.author;
+      });
+    },
+  },
+  User: {
+    posts(parent, args, ctx, info) {
+      return posts.filter((post) => {
+        return post.author === parent.id;
+      });
     },
   },
 };
