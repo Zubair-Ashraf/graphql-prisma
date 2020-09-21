@@ -75,7 +75,7 @@ const Mutation = {
     return post;
   },
 
-  createComment(parent, args, { users, posts, comments }) {
+  createComment(parent, args, { users, posts, comments, pubsub }) {
     const userExist = users.some((user) => user.id === args.data.author);
     if (!userExist) throw new Error("User doesn't exist");
 
@@ -89,6 +89,8 @@ const Mutation = {
       id: uuid(),
       ...args.data,
     };
+
+    pubsub.publish(`comment ${args.data.post}`, { comment });
 
     comments.push(comment);
 
