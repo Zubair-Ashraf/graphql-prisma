@@ -1,3 +1,5 @@
+import uuid from "uuid/v4";
+
 const Mutation = {
   createUser(parent, { data: { name, email, age } }, { users }) {
     const emailExist = users.some((user) => user.email === email);
