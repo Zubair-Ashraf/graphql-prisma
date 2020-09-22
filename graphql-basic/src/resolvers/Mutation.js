@@ -138,24 +138,45 @@ const Mutation = {
       ...args.data,
     };
 
-    pubsub.publish(`comment ${args.data.post}`, { comment });
+    pubsub.publish(`comment ${args.data.post}`, {
+      comment: {
+        data: comment,
+        mutation: "CREATED",
+      },
+    });
 
     comments.push(comment);
 
     return comment;
   },
 
-  deleteComment(parent, { id }, { comments }) {
+  deleteComment(parent, { id }, { comments, pubsub }) {
     const commentIndex = comments.findIndex((comment) => comment.id === id);
     if (commentIndex === -1) throw new Error("Comment doesn't exist");
-    const deletedComment = comments.splice(commentIndex, 1);
-    return deletedComment[0];
+    const [deletedComment] = comments.splice(commentIndex, 1);
+
+    pubsub.publish(`comment ${deletedComment.post}`, {
+      comment: {
+        data: deletedComment,
+        mutation: "DELETED",
+      },
+    });
+
+    return deletedComment;
   },
 
-  updateComment(parent, { id, text }, { comments }) {
+  updateComment(parent, { id, text }, { comments, pubsub }) {
     const comment = comments.find((comment) => comment.id === id);
     if (!comment) throw new Error("Comment doesn't exist");
     if (typeof text === "string") comment.text = text;
+
+    pubsub.publish(`comment ${comment.post}`, {
+      comment: {
+        data: comment,
+        mutation: "UPDATED",
+      },
+    });
+
     return comment;
   },
 };
