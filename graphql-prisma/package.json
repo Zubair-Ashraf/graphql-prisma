@@ -1,0 +1,33 @@
+{
+  "name": "graphql-basic",
+  "version": "1.0.0",
+  "description": "graphql basic with nodejs",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/index.js --ext js,graphql --exec babel-node",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "get-schema": "graphql get-schema -p prisma"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zubair-Ashraf/graphql-prisma.git"
+  },
+  "author": "zubair-ashraf",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Zubair-Ashraf/graphql-prisma/issues"
+  },
+  "homepage": "https://github.com/Zubair-Ashraf/graphql-prisma#readme",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "graphql-cli": "^3.0.14",
+    "graphql-yoga": "^1.14.10",
+    "nodemon": "^2.0.4",
+    "prisma-binding": "^2.3.16",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.26.0"
+  }
+}
