@@ -8,7 +8,6 @@ import {
   Mutation,
   Subscription,
 } from "./resolvers";
-import "./prisma";
 
 const pubsub = new PubSub();
 
