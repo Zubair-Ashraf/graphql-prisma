@@ -1,10 +1,22 @@
+import bcrypt from "bcryptjs";
+
 const Mutation = {
-  async createUser(parent, { data: { name, email } }, { prisma }, info) {
+  async createUser(
+    parent,
+    { data: { name, email, password } },
+    { prisma },
+    info
+  ) {
+    if (password.length < 8) throw new Error("Password is to short.");
+    password = await bcrypt.hash(password, 10);
     const emailExist = await prisma.exists.User({ email });
     if (emailExist) {
       throw new Error("This email already exists");
     }
-    return prisma.mutation.createUser({ data: { email, name } }, info);
+    return prisma.mutation.createUser(
+      { data: { email, name, password } },
+      info
+    );
   },
 
   async deleteUser(parent, { id }, { prisma }, info) {
