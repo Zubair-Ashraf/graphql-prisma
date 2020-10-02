@@ -2,6 +2,7 @@ type Query {
   greeting(name: String): String!
   add(numbers: [Float!]!): Float!
   users(query: String): [User!]!
+  post(id: ID!): Post!
   posts(query: String): [Post!]!
   comments: [Comment!]!
 }
@@ -9,10 +10,10 @@ type Query {
 type Mutation {
   createUser(data: createUserInput): AuthPayload!
   login(data: loginUserInput): AuthPayload!
-  deleteUser(id: ID!): User!
-  updateUser(id: ID!, data: updateUserInput!): User!
+  deleteUser: User!
+  updateUser(data: updateUserInput!): User!
   createPost(data: createPostnput): Post!
-  deletePost(id: ID!): Post!
+  deletePost(id: ID): Post!
   updatePost(id: ID!, data: updatePostInput!): Post!
   createComment(data: createCommentInput): Comment!
   deleteComment(id: ID!): Comment!
@@ -56,7 +57,7 @@ input updatePostInput {
 
 input createCommentInput {
   text: String!
-  author: ID!
+  # author: ID!
   post: ID!
 }
 
