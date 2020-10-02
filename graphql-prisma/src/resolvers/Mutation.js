@@ -61,7 +61,7 @@ const Mutation = {
           title,
           body,
           published,
-          author: { connect: { id: author } },
+          author: { connect: { id: userId } },
         },
       },
       info
