@@ -1,33 +1,31 @@
 const Query = {
-  greeting(parent, args, ctx, info) {
-    const { name } = args;
-    return `Hello ${name}`;
-  },
-  add(parent, { numbers }, ctx, info) {
-    return numbers.reduce((a, c) => {
-      return a + c;
-    });
-  },
-  users(parent, { query }, { users }) {
-    if (!query) return users;
-    else {
-      return users.filter((user) =>
-        user.name.toLocaleLowerCase().includes(query.toLocaleLowerCase())
-      );
+  users(parent, { query }, { prisma }, info) {
+    let optArgs = {};
+    if (query) {
+      optArgs.where = {
+        name_contains: query,
+      };
     }
+    return prisma.query.users(optArgs, info);
   },
-  posts(parent, { query }, { posts }) {
-    if (!query) return posts;
-    else {
-      return posts.filter(
-        (post) =>
-          post.title.toLocaleLowerCase().includes(query.toLocaleLowerCase()) ||
-          post.body.toLocaleLowerCase().includes(query.toLocaleLowerCase())
-      );
+  posts(parent, { query }, { prisma }, info) {
+    let optArgs = {};
+    if (query) {
+      optArgs.where = {
+        OR: [
+          {
+            title_contains: query,
+          },
+          {
+            body_contains: query,
+          },
+        ],
+      };
     }
+    return prisma.query.posts(optArgs, info);
   },
-  comments(parent, args, { comments }) {
-    return comments;
+  comments(parent, args, { prisma }, info) {
+    return prisma.query.comments(null, info);
   },
 };
 

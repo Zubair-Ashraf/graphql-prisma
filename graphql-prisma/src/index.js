@@ -8,6 +8,7 @@ import {
   Mutation,
   Subscription,
 } from "./resolvers";
+import prisma from "./prisma";
 
 const pubsub = new PubSub();
 
@@ -26,6 +27,7 @@ const server = new GraphQLServer({
     posts: db.posts,
     comments: db.comments,
     pubsub,
+    prisma,
   },
 });
 server.start(() => {
