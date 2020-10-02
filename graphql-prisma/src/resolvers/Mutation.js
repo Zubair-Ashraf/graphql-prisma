@@ -1,6 +1,16 @@
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import getUserId from "../utils/getUserId";
 
 const Mutation = {
+  async login(parent, { data: { email, password } }, { prisma }, info) {
+    let user = await prisma.query.user({ where: { email } });
+    if (!user) throw new Error("No user found");
+    const passMatched = await bcrypt.compare(password, user.password);
+    if (!passMatched) throw new Error("Invalid credentialds");
+    return { user, token: jwt.sign({ userId: user.id }, "thisissecret") };
+  },
+
   async createUser(
     parent,
     { data: { name, email, password } },
@@ -13,10 +23,14 @@ const Mutation = {
     if (emailExist) {
       throw new Error("This email already exists");
     }
-    return prisma.mutation.createUser(
-      { data: { email, name, password } },
-      info
-    );
+    const user = prisma.mutation.createUser({
+      data: { email, name, password },
+    });
+
+    return {
+      user,
+      token: jwt.sign({ userId: user.id }, "thisissecret"),
+    };
   },
 
   async deleteUser(parent, { id }, { prisma }, info) {
@@ -37,9 +51,10 @@ const Mutation = {
   createPost(
     parent,
     { data: { title, body, published, author } },
-    { prisma, pubsub },
+    { prisma, request },
     info
   ) {
+    const userId = getUserId(request);
     return prisma.mutation.createPost(
       {
         data: {
