@@ -1,8 +1,8 @@
 import getUserId from "../utils/getUserId";
 
 const Query = {
-  users(parent, { query }, { prisma }, info) {
-    let optArgs = {};
+  users(parent, { query, first, skip }, { prisma }, info) {
+    let optArgs = { first, skip };
     if (query) {
       optArgs.where = {
         name_contains: query,
@@ -35,8 +35,10 @@ const Query = {
     return posts[0];
   },
 
-  posts(parent, { query }, { prisma }, info) {
+  posts(parent, { query, first, skip }, { prisma }, info) {
     let optArgs = {
+      first,
+      skip,
       where: { published: true },
     };
 
@@ -54,9 +56,11 @@ const Query = {
     return prisma.query.posts(optArgs, info);
   },
 
-  myPosts(parent, { query }, { prisma, request }, info) {
+  myPosts(parent, { query, first, skip }, { prisma, request }, info) {
     const userId = getUserId(request);
     let optArgs = {
+      first,
+      skip,
       where: { author: { id: userId } },
     };
 
@@ -74,8 +78,12 @@ const Query = {
     return prisma.query.posts(optArgs, info);
   },
 
-  comments(parent, args, { prisma }, info) {
-    return prisma.query.comments(null, info);
+  comments(parent, { first, skip }, { prisma }, info) {
+    let optArgs = {
+      first,
+      skip,
+    };
+    return prisma.query.comments(optArgs, info);
   },
 };
 

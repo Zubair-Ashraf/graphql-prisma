@@ -1,11 +1,11 @@
 type Query {
   greeting(name: String): String!
   add(numbers: [Float!]!): Float!
-  users(query: String): [User!]!
+  users(query: String, first: Int, skip: Int): [User!]!
   post(id: ID!): Post!
-  posts(query: String): [Post!]!
-  myPosts(query: String): [Post!]!
-  comments: [Comment!]!
+  posts(query: String, first: Int, skip: Int): [Post!]!
+  myPosts(query: String, first: Int, skip: Int): [Post!]!
+  comments(first: Int, skip: Int): [Comment!]!
 }
 
 type Mutation {
