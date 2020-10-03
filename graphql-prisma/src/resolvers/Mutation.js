@@ -90,6 +90,16 @@ const Mutation = {
   ) {
     const userId = getUserId(request);
     const postExist = await prisma.exists.Post({ id, author: { id: userId } });
+
+    const isPostPublished = await prisma.exists.Post({
+      id,
+      published: true,
+    });
+
+    if (isPostPublished && !published) {
+      await prisma.mutation.deleteManyComments({ where: { post: { id } } });
+    }
+
     if (!postExist) throw new Error("Post not found");
     return prisma.mutation.updatePost(
       { where: { id }, data: { title, body, published } },
@@ -97,13 +107,19 @@ const Mutation = {
     );
   },
 
-  createComment(
+  async createComment(
     parent,
     { data: { text, author, post } },
     { prisma, request },
     info
   ) {
     const userId = getUserId(request);
+    const isPostPublished = await prisma.exists.Post({
+      id: post,
+      published: true,
+    });
+    if (!isPostPublished)
+      throw new Error("You doesn't comment in unpublished post");
     return prisma.mutation.createComment(
       {
         data: {

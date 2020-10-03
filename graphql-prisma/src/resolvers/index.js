@@ -1,6 +1,20 @@
-export { default as User } from "./User";
-export { default as Post } from "./Post";
-export { default as Comment } from "./Comment";
-export { default as Query } from "./Query";
-export { default as Mutation } from "./Mutation";
-export { default as Subscription } from "./Subscription";
+import { extractFragmentReplacements } from "prisma-binding";
+import User from "./User";
+import Post from "./Post";
+import Comment from "./Comment";
+import Query from "./Query";
+import Mutation from "./Mutation";
+import Subscription from "./Subscription";
+
+const resolvers = {
+  Query,
+  Mutation,
+  Subscription,
+  User,
+  Post,
+  Comment,
+};
+
+const fragmentReplacements = extractFragmentReplacements(resolvers);
+
+export { resolvers, fragmentReplacements };
