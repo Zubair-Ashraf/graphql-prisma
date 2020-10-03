@@ -4,6 +4,7 @@ type Query {
   users(query: String): [User!]!
   post(id: ID!): Post!
   posts(query: String): [Post!]!
+  myPosts(query: String): [Post!]!
   comments: [Comment!]!
 }
 
@@ -64,7 +65,7 @@ input createCommentInput {
 type User {
   id: ID!
   name: String!
-  email: String!
+  email: String
   password: String!
   posts: [Post!]!
   comments: [Comment!]!
