@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import getUserId from "../utils/getUserId";
+import generateToken from "../utils/generateToken";
 
 const Mutation = {
   async login(parent, { data: { email, password } }, { prisma }, info) {
@@ -8,7 +9,10 @@ const Mutation = {
     if (!user) throw new Error("No user found");
     const passMatched = await bcrypt.compare(password, user.password);
     if (!passMatched) throw new Error("Invalid credentialds");
-    return { user, token: jwt.sign({ userId: user.id }, "thisissecret") };
+    return {
+      user,
+      token: generateToken(user.id),
+    };
   },
 
   async createUser(
@@ -29,7 +33,7 @@ const Mutation = {
 
     return {
       user,
-      token: jwt.sign({ userId: user.id }, "thisissecret"),
+      token: generateToken(user.id),
     };
   },
 
