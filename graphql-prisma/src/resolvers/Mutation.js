@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import getUserId from "../utils/getUserId";
 import generateToken from "../utils/generateToken";
+import hashPassword from "../utils/hashPassword";
 
 const Mutation = {
   async login(parent, { data: { email, password } }, { prisma }, info) {
@@ -21,8 +22,7 @@ const Mutation = {
     { prisma },
     info
   ) {
-    if (password.length < 8) throw new Error("Password is to short.");
-    password = await bcrypt.hash(password, 10);
+    password = await hashPassword(password);
     const emailExist = await prisma.exists.User({ email });
     if (emailExist) {
       throw new Error("This email already exists");
@@ -46,15 +46,16 @@ const Mutation = {
 
   async updateUser(
     parent,
-    { data: { name, email } },
+    { data: { name, email, password } },
     { prisma, request },
     info
   ) {
     const userId = getUserId(request);
+    if (typeof password === "string") password = await hashPassword(password);
     const userExist = await prisma.exists.User({ id: userId });
     if (!userExist) throw new Error("User not found");
     return prisma.mutation.updateUser(
-      { where: { id: userId }, data: { name, email } },
+      { where: { id: userId }, data: { name, email, password } },
       info
     );
   },
